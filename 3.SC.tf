@@ -1,5 +1,5 @@
 resource "aws_security_group" "ssh" {
-  vpc_id = "DEV-VPC"
+  vpc_id = "${aws_vpc.dev.id}"
   name = "DEV-SG"
   ingress {
     from_port = 22
