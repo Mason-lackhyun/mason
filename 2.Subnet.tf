@@ -12,6 +12,6 @@ resource "aws_subnet" "sub-c" {
   cidr_block = "172.32.10.0/24"
   availability_zone = "ap-northeast-2c"
   tags = {
-    Name = "DEV-PUB-C"
+    Name = "DEV-PRI-C"
   }
 }
