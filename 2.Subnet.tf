@@ -7,11 +7,11 @@ resource "aws_subnet" "sub-a" {
     Name = "DEV-PUB-A"
   }
  }
-resource "aws_subnet" "sub-b" {
+resource "aws_subnet" "sub-c" {
   vpc_id = "${aws_vpc.dev.id}"
   cidr_block = "172.32.10.0/24"
   availability_zone = "ap-northeast-2c"
   tags = {
-    Name = "DEV-PUB-B"
+    Name = "DEV-PUB-C"
   }
 }

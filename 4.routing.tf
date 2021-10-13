@@ -20,6 +20,6 @@ tags = {
 }
 
 resource "aws_route_table_association" "C" {
-  subnet_id      = "${aws_subnet.sub-b.id}"
+  subnet_id      = "${aws_subnet.sub-c.id}"
   route_table_id = "${aws_route_table.route.id}"
 }
