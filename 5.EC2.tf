@@ -1,3 +1,4 @@
+## GW EC2 생성
 resource "aws_instance" "gw" {
   ami             = "ami-08c64544f5cfcddd0"
   instance_type   = "t2.micro"
@@ -13,7 +14,7 @@ resource "aws_instance" "gw" {
         Name = "GW"
     }
 }
-
+## mason EC2 생성
 resource "aws_instance" "mason" {
   ami             = "ami-08c64544f5cfcddd0"
   instance_type   = "t2.micro"

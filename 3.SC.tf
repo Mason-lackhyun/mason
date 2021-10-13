@@ -1,4 +1,4 @@
-
+## SG 생성 "ssh"
 resource "aws_security_group" "ssh" {
   vpc_id = "${aws_vpc.dev.id}"
   tags = {
@@ -32,7 +32,7 @@ resource "aws_security_group" "ssh" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
+## SG 생성 "ec2"
 resource "aws_security_group" "ec2" {
   vpc_id = "${aws_vpc.dev.id}"
   tags = {
