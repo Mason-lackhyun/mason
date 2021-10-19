@@ -7,17 +7,17 @@ resource "aws_alb" "alb" {
     "${aws_subnet.sub-a.id}",
     "${aws_subnet.sub-c.id}"
   ]
+  
+# access-log는 S3버켓에 저장하도록 지정
+  access_logs {
+    bucket  = "${aws_s3_bucket.mason88.id}"
+    prefix  = "dev-alb"
+    enabled = true
   }
-#access-log는 S3버켓에 저장하도록 지정
-#  access_logs {
-#    bucket  = "${aws_s3_bucket.mason88.id}"
-#    prefix  = "dev-alb"
-#    enabled = true
-#  }
-#  tags = {
-#    Name = "dev-alb"
-#  }
-
+  tags = {
+    Name = "dev-alb"
+  }
+}
 #lifecycle은 ALB가 재생성되면 새로운 ALB를 생성 후 이전 ALB 삭제되도록 Downtime 없도록 함
 #  lifecycle { create_before_destroy = true }
 #}
