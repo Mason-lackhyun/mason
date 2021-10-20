@@ -5,7 +5,7 @@ resource "aws_alb" "alb" {
   security_groups = ["${aws_security_group.alb-cherry.id}"]
   subnets         = [
     "${aws_subnet.sub-a.id}",
-    "${aws_subnet.sub-c.id}"
+    "${aws_subnet.sub-d.id}"
   ]
   
 # access-log는 S3버켓에 저장하도록 지정
@@ -56,10 +56,15 @@ resource "aws_alb_target_group" "dev-cherry" {
 
 resource "aws_alb_target_group_attachment" "attach-cherry" {
   target_group_arn = "${aws_alb_target_group.dev-cherry.arn}"
-  target_id        = "${aws_instance.cherry.id}"
+  target_id        = "${aws_instance.mason.id}"
   port             = 80
 }
 
+resource "aws_alb_target_group_attachment" "attach-cherry1" {
+  target_group_arn = "${aws_alb_target_group.dev-cherry.arn}"
+  target_id        = "${aws_instance.lackhyun.id}"
+  port             = 80
+}
 #resource "aws_alb_target_group_attachment" "static" {
 #  target_group_arn = "${aws_alb_target_group.static.arn}"
 #  target_id        = "${aws_instance.static.id}"

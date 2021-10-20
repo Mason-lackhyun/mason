@@ -48,3 +48,14 @@ resource "aws_route_table_association" "C" {
   subnet_id      = "${aws_subnet.sub-c.id}"
   route_table_id = "${aws_route_table.nat.id}"
 }
+
+resource "aws_route_table_association" "B" {
+  subnet_id      = "${aws_subnet.sub-b.id}"
+  route_table_id = "${aws_route_table.nat.id}"
+}
+
+resource "aws_route_table_association" "D" {
+  subnet_id      = "${aws_subnet.sub-d.id}"
+  route_table_id = "${aws_route_table.route.id}"
+}
+
