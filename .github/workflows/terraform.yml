@@ -14,35 +14,34 @@ jobs:
      run:
        working-directory: ${{ env.tf_actions_working_dir }}
     steps: 
-      - 
-        name: checkout
+      - name: checkout
         uses: actions/checkout@v3
-      - 
-        name: "setup terraform"
+      
+      - name: "setup terraform"
         uses: hashicorp/setup-terraform@v1
         with: 
           cli_config_credentials_token: "${{ secrets.TF_API_TOKEN }}"
-      - 
+      
+      - name: "terraform format"
         id: format
-        name: "terraform format"
         run: "terraform fmt -check"
-      - 
+      
+      - name: "terraform init"
         id: init
-        name: "terraform init"
         run: "terraform init"
-      - 
+      
+      - name: "terraform validate"
         id: validate
-        name: "terraform validate"
         run: "terraform validate -no-color"
-      - 
+      
+      - name: "terraform plan"
         id: plan
-        name: "terraform plan"
         run: "terraform plan -no-color"
-      - 
+      
+      - name: "terraform apply"
         if: "github.ref == 'refs/heads/main' && github.event_name == 'push'"
-        name: "terraform apply"
         run: "terraform apply"
-      - 
+      
+      - name: "terraform plan status"
         if: "steps.plan.outcome == 'failure'"
-        name: "terraform plan status"
         run: "exit 1"
