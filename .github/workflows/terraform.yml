@@ -1,0 +1,40 @@
+name: 'terraform'
+
+on: 
+ push:
+  branches:
+   - main
+   
+ jobs:
+  plan:
+   runs-on: ubuntu-latest
+   name: terraform action
+   env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+   steps:
+    -name: Checkout
+     uses: actions/checkout@v2
+     
+    -name: terraform format
+     id: fmt
+     run: terraform fmt -check
+    
+    -name: terraform init
+     id: init
+     run: terraform init
+     
+    -name: terraform validate
+     id: validate
+     run: terraform validate -no-color
+      
+    -name: terraform plan
+     id: plan
+     run: terraform plan -no-color
+     
+    -name: terraform apply
+     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+     run: terraform apply
+     
+    -name: terraform plan status
+     if: steps.plan.outcome == 'failure'
+     run: exit 1
