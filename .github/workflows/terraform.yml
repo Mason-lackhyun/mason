@@ -10,9 +10,8 @@ jobs:
   terraform: 
     name: "terraform action"
     runs-on: ubuntu-latest
-    defaults:
-     run:
-       working-directory: /Terraform/
+    env:
+     working-directory: ./Terraform
     steps: 
       - name: checkout
         uses: actions/checkout@v3
@@ -25,22 +24,27 @@ jobs:
       - name: "terraform format"
         id: format
         run: "terraform fmt -check"
+        working-directory: ${{ env.working-directory }}
       
       - name: "terraform init"
         id: init
         run: "terraform init"
+        working-directory: ${{ env.working-directory }}
       
       - name: "terraform validate"
         id: validate
         run: "terraform validate -no-color"
-      
+        working-directory: ${{ env.working-directory }} 
+ 
       - name: "terraform plan"
         id: plan
         run: "terraform plan -no-color"
+        working-directory: ${{ env.working-directory }} 
       
       - name: "terraform apply"
         if: "github.ref == 'refs/heads/main' && github.event_name == 'push'"
         run: "terraform apply"
+        working-directory: ${{ env.working-directory }}
       
       - name: "terraform plan status"
         if: "steps.plan.outcome == 'failure'"
