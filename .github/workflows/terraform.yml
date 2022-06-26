@@ -6,19 +6,19 @@ on:
    - main
    
  jobs:
-  plan:
-   runs-on: ubuntu-latest
-   name: terraform action
+  terraform:
+    name: terraform action
+    runs-on: ubuntu-latest
    env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
    steps:
     -name: checkout
      uses: actions/checkout@v2
-     
-    -name: terraform format
-     id: fmt
-     run: terraform fmt -check
     
+    -name: terraform format
+     id: format
+     run: terraform fmt -check
+ 
     -name: terraform init
      id: init
      run: terraform init
