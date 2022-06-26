@@ -5,36 +5,39 @@ on:
   branches:
    - main
    
- jobs:
-  terraform:
-    name: terraform action
-    runs-on: ubuntu-latest
-   env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+ terraform:
+   name: terraform action
+   runs-on: ubuntu-latest
    steps:
-    -name: checkout
-     uses: actions/checkout@v2
+   -name: checkout
+    uses: actions/checkout@v3
     
-    -name: terraform format
-     id: format
-     run: terraform fmt -check
+   -name: setup terraform
+    uses: hashicorp/setup-terraform@v1
+    with:
+     cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+     
+   -name: terraform format
+    id: format
+    run: terraform fmt -check
  
-    -name: terraform init
-     id: init
-     run: terraform init
+   -name: terraform init
+    id: init
+    run: terraform init
      
-    -name: terraform validate
-     id: validate
-     run: terraform validate -no-color
+   -name: terraform validate
+    id: validate
+    run: terraform validate -no-color
       
-    -name: terraform plan
-     id: plan
-     run: terraform plan -no-color
+   -name: terraform plan
+    id: plan
+    run: terraform plan -no-color
      
-    -name: terraform apply
-     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-     run: terraform apply
+   -name: terraform apply
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    run: terraform apply
      
-    -name: terraform plan status
-     if: steps.plan.outcome == 'failure'
-     run: exit 1
+   -name: terraform plan status
+    if: steps.plan.outcome == 'failure'
+    run: exit 1
