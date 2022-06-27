@@ -1,4 +1,4 @@
-resource "aws_instance" "test1" {
+resource "aws_instance" "test" {
   ami             = "data.aws_ami.linux.id"
   instance_type   = "t2.micro"
   key_name        = "mason"
@@ -9,7 +9,7 @@ resource "aws_instance" "test1" {
         volume_type = "gp3"
     }
     tags = {
-        Name = "test1"
+        Name = "test"
     }
 }
 
