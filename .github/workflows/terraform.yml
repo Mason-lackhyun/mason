@@ -52,7 +52,7 @@ jobs:
           cd ..
           
       - name: "terraform apply"
-        if: "github.ref == 'refs/heads/main' && github.event_name == 'push'"
+        if: "github.event_name == 'push'"
         run: | 
           cd test
           terraform apply
