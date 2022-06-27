@@ -53,6 +53,40 @@ jobs:
         if: "github.ref == 'refs/heads/main' && github.event_name == 'push'"
         run: "terraform apply"
       
+      - name: get PR number
+        uses: jwalton/gh-find-current-pr@v1
+        id: findPr
+        if: always() # Pick up events even if the job fails or is canceled.
+        with:
+          state: open
+
+      - name: Set sha1 short
+        id: sha1 # steps.sha1.outputs.short
+        if: always() # Pick up events even if the job fails or is canceled.
+        run: |
+          echo "::set-output name=short::${GITHUB_SHA::7}"
+      - name: comment output on PR
+        uses: actions/github-script@v5
+        if: always() # Pick up events even if the job fails or is canceled.
+        env:
+          GITHUB_ISSUE_NUMBER: ${{ steps.findPr.outputs.pr }}
+        with:
+          github-token: ${{secrets.GIT_HUB_TOKEN}}
+          script: |
+            const output = `_${{ github.event.commits[0].message }}_ [${{ steps.sha1.outputs.short }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) _Format_ \`${{ steps.fmt.outcome }}\`, _Init_ \`${{ steps.init.outcome }}\`, _Validate_ \`${{ steps.validate.outcome }}\`, _Plan_ \`${{ steps.plan.outcome }}\`
+            
+            <details><summary>Show Plan Details</summary>
+            \`\`\`\n
+            ${{ steps.plan.outputs.plan }}
+            \`\`\`
+            </details>`;
+            await github.rest.issues.createComment({
+              issue_number: process.env.GITHUB_ISSUE_NUMBER,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+            
       - name: "terraform plan status"
         if: "steps.plan.outcome == 'failure'"
         run: "exit 1"
