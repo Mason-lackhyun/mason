@@ -22,67 +22,42 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
       
-      - name: Set environment variables
-        id: setenv
-        run: |
-          LOCAL_BRANCH_NAME='${{ env.GIT_BRANCH_NAME }}'
-          echo "VPC_NAME=${LOCAL_BRANCH_NAME%/*}" >> $GITHUB_ENV
-          echo 'VPCS=${{ env.VPCS }}' >> $GITHUB_ENV
-      
+    
       - name: "terraform format"
         id: format
-        run: "terraform fmt -check"
+        run: |
+          cd test
+          "terraform fmt -check"
+          cd ..
       
       - name: "terraform init"
         id: init
-        run: "terraform init"
-      
+        run: |
+          cd test
+          "terraform init"
+          cd ..
+          
       - name: "terraform validate"
         id: validate
-        run: "terraform validate -no-color"
+        run: |
+          cd test
+          "terraform validate -no-color"
+          cd ..
  
       - name: "terraform plan"
         id: plan
-        run: "terraform plan -no-color"
-      
+        run: |
+          cd test
+          "terraform plan -no-color"
+          cd ..
+          
       - name: "terraform apply"
         if: "github.ref == 'refs/heads/main' && github.event_name == 'push'"
-        run: "terraform apply"
+        run: | 
+          cd test
+          "terraform apply"
+          cd ..
       
-      - name: get PR number
-        uses: jwalton/gh-find-current-pr@v1
-        id: findPr
-        if: always() # Pick up events even if the job fails or is canceled.
-        with:
-          state: open
-
-      - name: Set sha1 short
-        id: sha1 # steps.sha1.outputs.short
-        if: always() # Pick up events even if the job fails or is canceled.
-        run: |
-          echo "::set-output name=short::${GITHUB_SHA::7}"
-      - name: comment output on PR
-        uses: actions/github-script@v5
-        if: always() # Pick up events even if the job fails or is canceled.
-        env:
-          GITHUB_ISSUE_NUMBER: ${{ steps.findPr.outputs.pr }}
-        with:
-          github-token: ${{secrets.GIT_HUB_TOKEN}}
-          script: |
-            const output = `_${{ github.event.commits[0].message }}_ [${{ steps.sha1.outputs.short }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) _Format_ \`${{ steps.fmt.outcome }}\`, _Init_ \`${{ steps.init.outcome }}\`, _Validate_ \`${{ steps.validate.outcome }}\`, _Plan_ \`${{ steps.plan.outcome }}\`
-            
-            <details><summary>Show Plan Details</summary>
-            \`\`\`\n
-            ${{ steps.plan.outputs.plan }}
-            \`\`\`
-            </details>`;
-            await github.rest.issues.createComment({
-              issue_number: process.env.GITHUB_ISSUE_NUMBER,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            })
-            
       - name: "terraform plan status"
         if: "steps.plan.outcome == 'failure'"
         run: "exit 1"
