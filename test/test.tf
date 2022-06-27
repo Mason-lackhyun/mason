@@ -1,6 +1,6 @@
 resource "aws_instance" "test-server" {
   ami             = "data.aws_ami.linux.id"
-  instance_type   = "t2.micro"
+  instance_type   = "t3.micro"
   key_name        = "mason"
   
 
