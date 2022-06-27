@@ -27,7 +27,7 @@ jobs:
         id: format
         run: |
           cd test
-          terraform fmt -check
+          terraform fmt
           cd ..
       
       - name: "terraform init"
