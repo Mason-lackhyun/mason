@@ -5,46 +5,53 @@ on:
  push:
   branches:
    - main
-   
+
+env:
+  AWS_REGION: ap-northeast-2
+  GIT_BRANCH_NAME: ${{ github.ref_name }}
+
 jobs: 
   terraform: 
     name: "terraform action"
     runs-on: ubuntu-latest
-    env:
-     working-directory: ./test
+
     steps: 
       - name: checkout
         uses: actions/checkout@v3
       
-      - name: "setup terraform"
-        uses: hashicorp/setup-terraform@v1
-        with: 
-          cli_config_credentials_token: "${{ secrets.TF_API_TOKEN }}"
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Set environment variables
+        id: setenv
+        run: |
+          LOCAL_BRANCH_NAME='${{ env.GIT_BRANCH_NAME }}'
+          echo "VPC_NAME=${LOCAL_BRANCH_NAME%/*}" >> $GITHUB_ENV
+          echo 'VPCS=${{ env.VPCS }}' >> $GITHUB_ENV
       
       - name: "terraform format"
         id: format
         run: "terraform fmt -check"
-        working-directory: ${{ env.working-directory }}
       
       - name: "terraform init"
         id: init
         run: "terraform init"
-        working-directory: ${{ env.working-directory }}
       
       - name: "terraform validate"
         id: validate
         run: "terraform validate -no-color"
-        working-directory: ${{ env.working-directory }} 
  
       - name: "terraform plan"
         id: plan
         run: "terraform plan -no-color"
-        working-directory: ${{ env.working-directory }} 
       
       - name: "terraform apply"
         if: "github.ref == 'refs/heads/main' && github.event_name == 'push'"
         run: "terraform apply"
-        working-directory: ${{ env.working-directory }}
       
       - name: "terraform plan status"
         if: "steps.plan.outcome == 'failure'"
