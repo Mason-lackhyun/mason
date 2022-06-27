@@ -1,5 +1,5 @@
 resource "aws_instance" "test" {
-  ami             = "data.aws_ami.linux.id"
+  ami             = "data.aws_ami.linux2.id"
   instance_type   = "t2.micro"
   key_name        = "mason"
   
@@ -13,7 +13,7 @@ resource "aws_instance" "test" {
     }
 }
 
-  data "aws_ami" "linux" {
+  data "aws_ami" "linux2" {
   owners      = ["amazon"]
   most_recent = true
 
