@@ -55,7 +55,7 @@ jobs:
         if: "github.event_name == 'push'"
         run: | 
           cd test
-          terraform apply
+          terraform apply -auto-approve
           cd ..
       
       - name: "terraform plan status"
