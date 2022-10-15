@@ -1,4 +1,3 @@
 # mason
-This it Mason's World
-Nice to Meet you
+This is Mason's World and to use for Terraform
 
