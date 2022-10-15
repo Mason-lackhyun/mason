@@ -1,2 +1,2 @@
-**/.terraform/*
-**/.terraform.lock.hcl
+/Terraform/.terraform/*
+/Terraform/.terraform.lock.hcl
