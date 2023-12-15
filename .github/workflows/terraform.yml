@@ -34,28 +34,28 @@ jobs:
       - name: "terraform init"
         id: init
         run: |
-          cd test
+          cd Terraform/test
           terraform init
           cd ..
           
       - name: "terraform validate"
         id: validate
         run: |
-          cd test
+          cd Terraform/test
           terraform validate -no-color
           cd ..
  
       - name: "terraform plan"
         id: plan
         run: |
-          cd test
+          cd Terraform/test
           terraform plan -no-color
           cd ..
           
       - name: "terraform apply"
         if: "github.event_name == 'push'"
         run: | 
-          cd test
+          cd Terraform/test
           terraform apply -auto-approve
           cd ..
       
